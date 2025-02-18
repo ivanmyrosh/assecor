@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <style>
+        td {
+            padding: 5px;
+        }
+
+        button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Get Person by Id</h2>
+    <div>
+        <p>
+            Person Id:<br />
+            <input id="personId"  type="number"/>
+            <button id="displayPersonBtn">Display person by Id</button>
+        </p>
+        <p>
+            Favorite color:<br />
+            <input id="color" type="number" />
+            <button id="displayPersonsByColorBtn">Display persons by favorite color</button>
+        </p>
+        <p>
+            
+            <button id="resetBtn">Reset</button>
+        </p>
+    </div>
+    <table id="tblPersons">
+        <thead><tr><th>Name</th><th>Last Name</th><th>City</th><th>Zip code</th><th>Favorite Color</th><th></th></tr></thead>
+        <tbody>
+        </tbody>
+    </table>
+
+<script>
+    
+        async function getPersons() {
+            
+            const response = await fetch("/persons", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+           
+            if (response.ok === true) {
+                
+                const persons = await response.json();
+                const rows = document.querySelector("tbody");
+                
+                persons.forEach(person => rows.append(row(person)));
+            }
+            else {
+                const error = await response.json();
+                console.log(error.detail);
+            }
+        }
+        
+    async function getPerson(id) {
+        console.log({ id });
+            const response = await fetch(`/persons/${id.value}`, {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            });
+
+            if (response.ok === true) {
+                const person = await response.json();
+                const rows = document.querySelector("tbody");
+                
+                rows.append(row(person));
+            }
+            else {
+                const error = await response.json();
+                console.log(error.detail); 
+            }
+    }
+
+    async function getPersonsByColor(id) {
+        console.log({ id });
+        const response = await fetch(`/persons/color/${id.value}`, {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+
+        if (response.ok === true) {
+            const persons = await response.json();
+            const rows = document.querySelector("tbody");
+
+            persons.forEach(person => rows.append(row(person)));
+        }
+        else {
+            const error = await response.json();
+            console.log(error.detail);
+        }
+    }       
+        
+        function reset() {
+            const tbody = document.querySelector("tbody");
+            const rowCount = tbody.rows.length;
+            for (var i = rowCount; i > 0; i--) {
+                tblPersons.deleteRow(i);
+            } 
+        }
+        
+        function row(person) {
+
+            const tr = document.createElement("tr");
+            tr.setAttribute("data-rowid", person.id);
+
+            const nameTd = document.createElement("td");
+            nameTd.append(person.name);
+            tr.append(nameTd);
+
+            const lastNameTd = document.createElement("td");
+            lastNameTd.append(person.lastName);
+            tr.append(lastNameTd);            
+
+            const cityTd = document.createElement("td");
+            cityTd.append(person.city);
+            tr.append(cityTd);     
+
+            const zipCodeTd = document.createElement("td");
+            zipCodeTd.append(person.zipCode);
+            tr.append(zipCodeTd);     
+
+            const colorTd = document.createElement("td");
+            colorTd.append(person.color);
+            tr.append(colorTd);     
+
+            return tr;
+        }
+    document.getElementById("resetBtn").addEventListener("click", () => {
+        reset();
+        getPersons();
+               
+        personId.value = "";
+        color.value = "";
+    });
+
+    document.getElementById("displayPersonsByColorBtn").addEventListener("click", () => {
+        reset()
+        getPersonsByColor(color);
+    });
+    
+    document.getElementById("displayPersonBtn").addEventListener("click", async () => {
+        reset();
+        getPerson(personId);
+        });
+        
+        getPersons();
+    </script>
+</body>
+</html>
