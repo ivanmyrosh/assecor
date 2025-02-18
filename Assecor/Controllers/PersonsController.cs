@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Design.Serialization;
 using AutoMapper;
-
+using BusinessDTO;
+using Domain.Core;
 using Interfaces;
 
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,26 @@ namespace Assecor.Controllers
             if (color == null)
                 return Problem(detail: $"The Color with this '{id}' id has not found.");
             return Json( persons.Where(x=>x.Color.ToLower().Equals(color.Farbe.ToLower())));
+        }
+
+        [HttpGet("colors")]
+        public ActionResult GetColors()
+        {
+            var colors = _colorService.GetColors();
+            
+            return Json(colors);
+        }
+
+        [HttpPost]
+        public ActionResult AddPerson(PersonDTO personDto)
+        {
+            bool results = _personService.AddPerson(personDto);
+            if (results)
+            {
+                return Json(StatusCode(200));
+            }
+
+            return Json(StatusCode(500));
         }
     }
 }

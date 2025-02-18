@@ -22,6 +22,11 @@ namespace Domain.Repositories
             return db.Colors.FirstOrDefault(x => x.Id == id);
         }
 
+        public void Add(Color color)
+        {
+            db.Colors.Add(color);
+        }
+
         private bool disposed = false;
 
         public virtual void Dispose(bool disposing)

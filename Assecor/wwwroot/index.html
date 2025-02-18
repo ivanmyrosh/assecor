@@ -13,11 +13,15 @@
     </style>
 </head>
 <body>
-    <h2>Get Person by Id</h2>
+    <h2>Persons</h2>
     <div>
         <p>
+
+            <button id="resetBtn">Reset</button>
+        </p>
+        <p>
             Person Id:<br />
-            <input id="personId"  type="number"/>
+            <input id="personId" type="number" />
             <button id="displayPersonBtn">Display person by Id</button>
         </p>
         <p>
@@ -26,9 +30,14 @@
             <button id="displayPersonsByColorBtn">Display persons by favorite color</button>
         </p>
         <p>
-            
-            <button id="resetBtn">Reset</button>
-        </p>
+            New person:<br />
+            Name <input id="personname" type="text" />
+            Last Name <input id="lastname" type="text" />
+            City<input id="city" type="text" /><br />
+            Zip Code<input id="zipcode" type="number" />
+            Favorite color<select id="favoriteColor"></select>
+            <button id="saveNewPersonBtn">Save</button>
+            </p>
     </div>
     <table id="tblPersons">
         <thead><tr><th>Name</th><th>Last Name</th><th>City</th><th>Zip code</th><th>Favorite Color</th><th></th></tr></thead>
@@ -38,7 +47,7 @@
 
 <script>
     
-        async function getPersons() {
+    async function getPersons() {
             
             const response = await fetch("/persons", {
                 method: "GET",
@@ -94,9 +103,57 @@
             const error = await response.json();
             console.log(error.detail);
         }
-    }       
+    }    
+
+    async function getColors() {
+
+        const response = await fetch('/persons/colors', {
+            method: "GET",
+            headers: { "Accept": "application/json" }
+        });
+
+        if (response.ok === true) {
+
+            const colors = await response.json();
+            const colorSelect = document.querySelector("select");
+            colors.forEach(color => {
+                var option = document.createElement("option");
+                option.text = color.farbe;
+                colorSelect.add(option);
+            })
+        }
+        else {
+            const error = await response.json();
+            console.log(error.detail);
+        }
+    } 
+
+    async function saveNewPerson(personname, lastname, city, zipcode, favoriteColor) {
+        const response = await fetch('/persons/', {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                id: 0,
+                name: personname,
+                lastName: lastname,
+                city: city,
+                zipCode: parseInt(zipcode, 10),
+                color: favoriteColor
+            })
+        });
+        if (response.ok === true) {
+            //const user = await response.json();
+            //document.querySelector("tbody").append(row(user));
+            reset();
+            getPersons();
+        }
+        else {
+            const error = await response.json();
+            console.log(error.message);
+        }
+    }
         
-        function reset() {
+    function reset() {
             const tbody = document.querySelector("tbody");
             const rowCount = tbody.rows.length;
             for (var i = rowCount; i > 0; i--) {
@@ -104,7 +161,7 @@
             } 
         }
         
-        function row(person) {
+    function row(person) {
 
             const tr = document.createElement("tr");
             tr.setAttribute("data-rowid", person.id);
@@ -147,9 +204,19 @@
     document.getElementById("displayPersonBtn").addEventListener("click", async () => {
         reset();
         getPerson(personId);
-        });
+    });
+
+    document.getElementById("saveNewPersonBtn").addEventListener("click", async () => {
+        await saveNewPerson(personname.value, lastname.value, city.value, zipcode.value, favoriteColor.value);
+
+        personname.value = "";
+        lastname.value = "";
+        city.value = "";
+        zipcode.value = "";
+    });
         
-        getPersons();
+    getPersons();
+    getColors();
     </script>
 </body>
 </html>

@@ -72,10 +72,8 @@ namespace Assecor.Tests
         [Test]
         public void TestGetAll()
         {
-            var results = new [] { personsController.Get().Value };
-
-            var result =results.First();
-
+            var result = ((JsonResult)personsController.Get()).Value;
+            
             List<Object> collection = new List<Object>((IEnumerable<Object>)result);
             
             Assert.That(collection.Count, Is.EqualTo(3));
@@ -99,11 +97,9 @@ namespace Assecor.Tests
         {
             var testColorId = 2;
             
-            var jsResult = new [] { personsController.GetByColor(testColorId).Value };
-
-            var result = jsResult.First();
-
-            List<Object> collection = new List<Object>((IEnumerable<Object>)result);
+            var jsResult = ((JsonResult) personsController.GetByColor(testColorId)).Value;
+            
+            List<Object> collection = new List<Object>((IEnumerable<Object>)jsResult);
 
             Assert.That(collection.Count, Is.EqualTo(_persons.Where(x => x.Color.Id == testColorId).Count()));
         }

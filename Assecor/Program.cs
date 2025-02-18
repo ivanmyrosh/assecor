@@ -13,11 +13,12 @@ builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddScoped<IPersonService, PersonService>();
-builder.Services.AddScoped<IColorService, ColorService>();
-builder.Services.AddScoped<IUnitOfWork, EFUnitOfWork>();
-builder.Services.AddScoped<IReadPersonFromFile, ReadCustomCsvFile>();
-builder.Services.AddScoped<IReadColor, ReadColor>();
+
+builder.Services.AddSingleton<IPersonService, PersonService>();
+builder.Services.AddSingleton<IColorService, ColorService>();
+builder.Services.AddSingleton<IUnitOfWork, EFUnitOfWork>();
+builder.Services.AddSingleton<IReadPersonFromFile, ReadCustomCsvFile>();
+builder.Services.AddSingleton<IReadColor, ReadColor>();
 
 var app = builder.Build();
 

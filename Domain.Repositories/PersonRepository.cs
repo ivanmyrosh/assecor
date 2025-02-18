@@ -23,6 +23,11 @@ namespace Domain.Repositories
             return db.Persons.FirstOrDefault(x => x.Id == id);
         }
 
+        public void Add(Person person)
+        {
+            db.Persons.Add(person);
+        }
+
         private bool disposed = false;
 
         public virtual void Dispose(bool disposing)

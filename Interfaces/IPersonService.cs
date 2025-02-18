@@ -6,6 +6,6 @@ namespace Interfaces
     {
         PersonDTO? GetPerson(int? id);
         IEnumerable<PersonDTO> GetPersons();
-
+        bool AddPerson(PersonDTO personDto);
     }
 }

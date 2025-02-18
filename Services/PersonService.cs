@@ -11,16 +11,14 @@ namespace Services
     public class PersonService:IPersonService
     {
         IUnitOfWork Database { get; set; }
-        private Mapper mapper;
-
+        private Mapper mapperToDto;
         public PersonService(IUnitOfWork uow)
         {
             Database = uow;
 
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Person, PersonDTO>()
+            var configToDto = new MapperConfiguration(cfg => cfg.CreateMap<Person, PersonDTO>()
                 .ForMember("Color", opt => opt.MapFrom(src => src.Color.Farbe)));
-            mapper = new Mapper(config);
-
+            mapperToDto = new Mapper(configToDto);
         }
 
         public PersonDTO? GetPerson(int? id)
@@ -31,7 +29,7 @@ namespace Services
             else
             {
                 var result = Database.Persons.Get(id.GetValueOrDefault());
-                return mapper.Map<PersonDTO>(result);
+                return mapperToDto.Map<PersonDTO>(result);
             }
 
         }
@@ -39,7 +37,31 @@ namespace Services
         public IEnumerable<PersonDTO> GetPersons()
         {
             var result = Database.Persons.GetAll();
-            return mapper.Map<IEnumerable<PersonDTO>>(result);
+            return mapperToDto.Map<IEnumerable<PersonDTO>>(result);
+        }
+
+        public bool AddPerson(PersonDTO personDto)
+        {
+            var color = Database.Colors.GetAll()
+                .FirstOrDefault(x => x.Farbe.ToLower().Equals(personDto.Color.ToLower()));
+            if (color == null)
+                return false;
+
+            var maxId = Database.Persons.GetAll().Max(x => x.Id);
+
+            var person = new Person()
+            {
+                Id = maxId + 1,
+                City = personDto.City,
+                Name = personDto.Name,
+                LastName = personDto.LastName,
+                ZipCode = personDto.ZipCode,
+                Color = color,
+            };
+
+            Database.Persons.Add(person);
+
+            return true;
         }
     }
 }

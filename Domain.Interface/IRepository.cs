@@ -1,4 +1,5 @@
-﻿using Domain.Core;
+﻿using System.ComponentModel;
+using Domain.Core;
 
 namespace Domain.Interface
 {
@@ -6,5 +7,6 @@ namespace Domain.Interface
     {
         IEnumerable<T> GetAll();
         T Get(int id);
+        void Add(T entity);
     }
 }
