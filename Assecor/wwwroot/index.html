@@ -69,7 +69,7 @@
         
     async function getPerson(id) {
         console.log({ id });
-            const response = await fetch(`/persons/${id.value}`, {
+        const response = await fetch(`/persons/${id.value}`, {
                 method: "GET",
                 headers: { "Accept": "application/json" }
             });

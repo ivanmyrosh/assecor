@@ -25,7 +25,8 @@ namespace Assecor.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            return Json(_personService.GetPersons());
+            var result = _personService.GetPersons();
+            return Json(result);
         }
 
         [HttpGet("{id}")]
@@ -48,7 +49,7 @@ namespace Assecor.Controllers
         }
 
         [HttpGet("colors")]
-        public ActionResult GetColors()
+        public JsonResult GetColors()
         {
             var colors = _colorService.GetColors();
             

@@ -1,5 +1,4 @@
-@Assecor_HostAddress = http://localhost:5112
-
+@Assecor_HostAddress = https://localhost:7067
 GET {{Assecor_HostAddress}}/Index/
 Accept: application/json
 
